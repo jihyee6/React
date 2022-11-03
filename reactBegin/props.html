@@ -13,10 +13,13 @@
 <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
 <script src = "https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
 <script type="text/babel">
-    function Btn({text}){
+    function Btn({text, changeValue}){
         
-        return <button style ={{
+        return <button 
+        onClick={changeValue}
+        style ={{
             backgroundColor: "tomato",
             color: "white",
             padding: "10px 20px",
@@ -24,13 +27,20 @@
             borderRadius: 10,
         }}>{text}</button>
     }
-   
+    const MemorizedBtn = React.memo(Btn);
+    // prop이 변경되지 않으면 re-render를 하지 않게 
+    Btn.proptypes = {
+        text: PropTypes.string.isRequired
+    }
+    //proptype을  정해서 정해진 타입이 아니면 오류 발생
+    //isRequered는 필수로 사용해야하는건 아니지만 사용하면 필수로 proptype이 지켜져야하는 항목
     function App(){
-    
+        const [value, setValue] = React.useState("Save Changes");
+        const changeValue = () => setValue("Revert Changes");
         return(
             <div>
-                <Btn text="Save Changes" />
-                <Btn text="Continue" />
+                <MemorizedBtn text={value} changeValue={changeValue} />
+                <MemorizedBtn text="Continue" /> 
             </div>
         );
     }
